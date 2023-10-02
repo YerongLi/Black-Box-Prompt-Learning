@@ -22,7 +22,7 @@ from loss import *
 import wandb
 import openai, time
 import sys
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 logging.basicConfig(
     format='%(asctime)s %(levelname)-4s - %(filename)-6s:%(lineno)d - %(message)s',
     level=logging.INFO,
@@ -319,12 +319,12 @@ def main():
     accelerator = Accelerator()
     # Make one log on every process with the configuration for debugging.
 
-    logger.info(f'Logger start: {os.uname()[1]}')
-    logger.info(accelerator.state)
+    logging.info(f'logging start: {os.uname()[1]}')
+    logging.info(accelerator.state)
 
     # Setup logging, we only want one process per machine to log things on the screen.
     # accelerator.is_local_main_process is only True for one process per machine.
-    logger.setLevel(logging.INFO if accelerator.is_local_main_process else logging.ERROR)
+    logging.setLevel(logging.INFO if accelerator.is_local_main_process else logging.ERROR)
     if accelerator.is_local_main_process:
         datasets.utils.logging.set_verbosity_warning()
         transformers.utils.logging.set_verbosity_info()
@@ -538,7 +538,7 @@ def main():
 
     # Log a few random samples from the training set:
     for index in random.sample(range(len(train_dataset)), 3):
-        logger.info(f"Sample {index} of the training set: {train_dataset[index]}.")
+        logging.info(f"Sample {index} of the training set: {train_dataset[index]}.")
     
     train_batches = create_batches(train_dataset, batch_size=args.per_device_train_batch_size, shuffle=True)
     eval_batches = create_batches(eval_dataset, batch_size=args.per_device_eval_batch_size)
@@ -573,13 +573,13 @@ def main():
     args.loss_back_epoch = args.num_train_epochs
     
     total_batch_size = args.per_device_train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
-    logger.info("***** Running training *****")
-    logger.info(f"  Num batches = {len(train_batches['sentence'])}")
-    logger.info(f"  Num Epochs = {args.num_train_epochs}")
-    logger.info(f"  Instantaneous batch size per device = {args.per_device_train_batch_size}")
-    logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
-    logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
-    logger.info(f"  Total optimization steps = {args.max_train_steps}")
+    logging.info("***** Running training *****")
+    logging.info(f"  Num batches = {len(train_batches['sentence'])}")
+    logging.info(f"  Num Epochs = {args.num_train_epochs}")
+    logging.info(f"  Instantaneous batch size per device = {args.per_device_train_batch_size}")
+    logging.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
+    logging.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
+    logging.info(f"  Total optimization steps = {args.max_train_steps}")
 
     prompt_search_space = args.prompt_search_space
     prompts_probs = torch.FloatTensor([[1 / prompt_search_space] * prompt_search_space] * prompt_length)
@@ -742,8 +742,8 @@ def evaluate(args, eval_batches, metric, ce_loss, accelerator, epoch, best_epoch
     else:
         eval_metric = metric.compute()
 
-    logger.info("** eval **")
-    logger.info(f"epoch {epoch}: {eval_metric}")
+    logging.info("** eval **")
+    logging.info(f"epoch {epoch}: {eval_metric}")
 
     if args.task_name == 'cola':
         key = 'matthews_correlation'
@@ -837,8 +837,8 @@ def test(args, test_batches, metric, accelerator, epoch, results, prompts_probs=
         test_result = test_metric[key]
         results.append(test_result)
 
-        logger.info("** test **")
-        logger.info(f"epoch {epoch}: {test_metric}")
+        logging.info("** test **")
+        logging.info(f"epoch {epoch}: {test_metric}")
         if args.use_wandb:
             for key in test_metric.keys():
                 eval_key = 'Black_test_' + key
