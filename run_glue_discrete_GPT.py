@@ -599,7 +599,10 @@ def main():
         train_batches = create_batches(train_dataset, batch_size=args.per_device_train_batch_size, shuffle=True)
         train_batches = accelerator.prepare(train_batches)
         logging.info('train_batches')
+        print('train_batches')
         logging.info(train_batches)
+        print(train_batches)
+
         try:
             for step in range(len(train_batches['sentence'])):
                 prompts_dist = torch.distributions.Categorical(prompts_probs)
