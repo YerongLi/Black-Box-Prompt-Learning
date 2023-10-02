@@ -324,13 +324,13 @@ def main():
 
     # Setup logging, we only want one process per machine to log things on the screen.
     # accelerator.is_local_main_process is only True for one process per machine.
-    logging.setLevel(logging.INFO if accelerator.is_local_main_process else logging.ERROR)
-    if accelerator.is_local_main_process:
-        datasets.utils.logging.set_verbosity_warning()
-        transformers.utils.logging.set_verbosity_info()
-    else:
-        datasets.utils.logging.set_verbosity_error()
-        transformers.utils.logging.set_verbosity_error()
+    # logging.setLevel(logging.INFO if accelerator.is_local_main_process else logging.ERROR)
+    # if accelerator.is_local_main_process:
+    #     datasets.utils.logging.set_verbosity_warning()
+    #     transformers.utils.logging.set_verbosity_info()
+    # else:
+    #     datasets.utils.logging.set_verbosity_error()
+    #     transformers.utils.logging.set_verbosity_error()
 
     # If passed along, set the training seed now.
     if args.seed is not None:
