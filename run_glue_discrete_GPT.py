@@ -314,10 +314,12 @@ def main():
     accelerator = Accelerator()
     # Make one log on every process with the configuration for debugging.
     logging.basicConfig(
-        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-        datefmt="%m/%d/%Y %H:%M:%S",
+        format='%(asctime)s %(levelname)-4s - %(filename)-6s:%(lineno)d - %(message)s',
         level=logging.INFO,
-    )
+        filename='./output.log',
+        datefmt='%m-%d %H:%M:%S')
+
+    logging.info(f'Logger start: {os.uname()[1]}')
     logger.info(accelerator.state)
 
     # Setup logging, we only want one process per machine to log things on the screen.
@@ -596,7 +598,8 @@ def main():
     for epoch in range(args.num_train_epochs):
         train_batches = create_batches(train_dataset, batch_size=args.per_device_train_batch_size, shuffle=True)
         train_batches = accelerator.prepare(train_batches)
-
+        logging.info('train_batches')
+        logging.info(train_batches)
         try:
             for step in range(len(train_batches['sentence'])):
                 prompts_dist = torch.distributions.Categorical(prompts_probs)
