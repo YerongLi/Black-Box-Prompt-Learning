@@ -26,7 +26,11 @@ from torch.nn import CrossEntropyLoss
 from loss import *
 import wandb
 logger = logging.getLogger(__name__)
-
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-4s - %(filename)-6s:%(lineno)d - %(message)s',
+    level=logging.INFO,
+    filename='./output.log',
+    datefmt='%m-%d %H:%M:%S')
 require_version("datasets>=1.8.0", "To fix: pip install -r examples/pytorch/text-classification/requirements.txt")
 
 DOMAIN_DATASET = ['CI', 'SE', 'RCT', 'HP']
@@ -556,6 +560,8 @@ def main():
     for epoch in range(args.num_train_epochs):
         try:
             for step, batch in enumerate(train_dataloader):
+                logging.info('train_batches')
+                logging.info(batch)
                 prompts_dist = torch.distributions.Categorical(prompts_probs)
                 with torch.no_grad():
                     if args.trial and step >= 100:
