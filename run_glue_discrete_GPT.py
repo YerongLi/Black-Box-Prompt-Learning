@@ -23,6 +23,11 @@ import wandb
 import openai, time
 import sys
 logger = logging.getLogger(__name__)
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-4s - %(filename)-6s:%(lineno)d - %(message)s',
+    level=logging.INFO,
+    filename='./output.log',
+    datefmt='%m-%d %H:%M:%S')
 
 require_version("datasets>=1.8.0", "To fix: pip install -r examples/pytorch/text-classification/requirements.txt")
 
@@ -313,13 +318,8 @@ def main():
     # Initialize the accelerator. We will let the accelerator handle device placement for us in this example.
     accelerator = Accelerator()
     # Make one log on every process with the configuration for debugging.
-    logging.basicConfig(
-        format='%(asctime)s %(levelname)-4s - %(filename)-6s:%(lineno)d - %(message)s',
-        level=logging.INFO,
-        filename='./output.log',
-        datefmt='%m-%d %H:%M:%S')
 
-    logging.info(f'Logger start: {os.uname()[1]}')
+    logger.info(f'Logger start: {os.uname()[1]}')
     logger.info(accelerator.state)
 
     # Setup logging, we only want one process per machine to log things on the screen.
