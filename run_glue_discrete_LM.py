@@ -608,9 +608,18 @@ def main():
 
 
                 prompts_dist = torch.distributions.Categorical(prompts_probs)
-                logging.info('prompts_probs.shape')
-                logging.info(prompts_probs.shape)
-                logging.info(prompts_probs)
+                # logging.info('prompts_probs.shape')
+                # logging.info(prompts_probs.shape)
+                # logging.info(prompts_probs)
+                # 10-10 00:57:09 INFO - run_glue_discrete_LM.py:611 - prompts_probs.shape
+                # 10-10 00:57:09 INFO - run_glue_discrete_LM.py:612 - torch.Size([10, 200])
+                # 10-10 00:57:09 INFO - run_glue_discrete_LM.py:613 - tensor([[0.0050, 0.0050, 0.0050,  ..., 0.0050, 0.0050, 0.0050],
+                #         [0.0050, 0.0050, 0.0050,  ..., 0.0050, 0.0050, 0.0050],
+                #         [0.0050, 0.0050, 0.0050,  ..., 0.0050, 0.0050, 0.0050],
+                #         ...,
+                #         [0.0050, 0.0050, 0.0050,  ..., 0.0050, 0.0050, 0.0050],
+                #         [0.0050, 0.0050, 0.0050,  ..., 0.0050, 0.0050, 0.0050],
+                #         [0.0050, 0.0050, 0.0050,  ..., 0.0050, 0.0050, 0.0050]],
                 with torch.no_grad():
                     if args.trial and step >= 100:
                         break
@@ -620,6 +629,8 @@ def main():
                     prompts_discrete_indices_list = []
                     for k in range(args.sample_size):
                         prompts_discrete_indices = prompts_dist.sample()
+                        logging.info('prompts_discrete_indices')
+                        logging.info(prompts_discrete_indices)
                         prompts_discrete_indices_list.append(prompts_discrete_indices)
                         if args.use_ngram:
                             prompts_discrete_indices_ngram_list = []
