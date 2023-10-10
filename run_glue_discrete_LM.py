@@ -560,8 +560,28 @@ def main():
     for epoch in range(args.num_train_epochs):
         try:
             for step, batch in enumerate(train_dataloader):
-                logging.info('train_batches')
-                logging.info(batch)
+
+                # ===================== Printing ===============
+                input_ids = batch['input_ids']
+                labels = batch['labels']
+
+                # Convert tensors to lists
+                input_ids = input_ids.tolist()
+                labels = labels.tolist()
+
+                # Tokenize and decode input_ids and labels
+                for i in range(min(len(input_ids), 3)):
+                    input_text = tokenizer.decode(input_ids[i], skip_special_tokens=True)
+                    label_text = tokenizer.decode(labels[i], skip_special_tokens=True)
+
+                    logging.info(f"Input: {input_text}")
+                    logging.info(f"Input: {input_text}")
+
+
+                # ===================== Printing ===============
+
+                # logging.info('train_batches')
+                # logging.info(batch)
                 prompts_dist = torch.distributions.Categorical(prompts_probs)
                 with torch.no_grad():
                     if args.trial and step >= 100:

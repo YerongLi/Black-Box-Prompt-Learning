@@ -611,8 +611,7 @@ def main():
                     if args.trial and step >= 100:
                         break
                     bsz = len(train_batches['sentence'][step])
-                    logging.info("train_batches['sentence'][step]")
-                    logging.info(train_batches['sentence'][step])
+
                     labels = train_batches["labels"][step]
                     loss_list = []
                     prompts_discrete_indices_list = []
