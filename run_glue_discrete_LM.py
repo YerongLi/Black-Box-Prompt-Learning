@@ -670,7 +670,7 @@ def main():
                     for k in range(args.sample_size):
                         prompts_probs.grad += 1 / (args.sample_size - 1) * (loss_list[k] - loss_avg) * derivative[k]
                     logging.info('prompts_probs.grad')
-                    logging.info(prompts_probs.grad)
+                    logging.info(prompts_probs.grad.shape)
                     torch.nn.utils.clip_grad_norm_(prompts_probs, 3)
                     prompt_optimizer.step()
                     constrainScoreByWholeExact(prompts_probs)
