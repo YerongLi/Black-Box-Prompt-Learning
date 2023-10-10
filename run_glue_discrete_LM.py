@@ -629,8 +629,12 @@ def main():
                     prompts_discrete_indices_list = []
                     for k in range(args.sample_size):
                         prompts_discrete_indices = prompts_dist.sample()
-                        logging.info('prompts_discrete_indices')
-                        logging.info(prompts_discrete_indices)
+                        # logging.info('prompts_discrete_indices')
+                        # logging.info(prompts_discrete_indices)
+                        # 10-10 01:01:30 INFO - run_glue_discrete_LM.py:632 - prompts_discrete_indices
+                        # 10-10 01:01:30 INFO - run_glue_discrete_LM.py:633 - tensor([194, 122, 122,  92, 108,  71,  63, 151,  21,  49])
+                        # 10-10 01:01:31 INFO - run_glue_discrete_LM.py:632 - prompts_discrete_indices
+                        # 10-10 01:01:31 INFO - run_glue_discrete_LM.py:633 - tensor([188,  83,  11, 178,  13, 113, 151,  76, 133, 178])
                         prompts_discrete_indices_list.append(prompts_discrete_indices)
                         if args.use_ngram:
                             prompts_discrete_indices_ngram_list = []
@@ -641,7 +645,8 @@ def main():
                             cur_input_ids = torch.cat([torch.zeros(bsz, 1, dtype=torch.long).to(args.device), prompts_discrete_ngram_indices.unsqueeze(0).repeat(bsz, 1).to(args.device), batch['input_ids'][:, 1:]], dim=1)
                         else: 
                             cur_input_ids = torch.cat([torch.zeros(bsz, 1, dtype=torch.long).to(args.device), prompts_discrete_indices.unsqueeze(0).repeat(bsz, 1).to(args.device), batch['input_ids'][:, 1:]], dim=1)
-
+                        logging.info('cur_input_ids')
+                        logging.info(cur_input_ids)
                         cur_attention_mask = torch.cat([torch.ones(bsz, 1).to(args.device), torch.ones(bsz, prompt_length).to(args.device), batch["attention_mask"][:, 1:]],dim=1)
                         mask_pos = np.where(np.array(cur_input_ids.cpu()) == tokenizer.mask_token_id) 
                         mask_pos = torch.tensor(mask_pos[-1])
