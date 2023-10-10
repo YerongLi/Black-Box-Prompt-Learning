@@ -575,7 +575,7 @@ def main():
                     label_text = tokenizer.decode(labels[i], skip_special_tokens=True)
 
                     logging.info(f"Input: {input_text}")
-                    logging.info(f"Input: {input_text}")
+                    logging.info(f"Label: {label_text}")
 
 
                 # ===================== Printing ===============
