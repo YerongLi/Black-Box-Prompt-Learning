@@ -608,6 +608,9 @@ def main():
 
 
                 prompts_dist = torch.distributions.Categorical(prompts_probs)
+                logging.info('prompts_probs.shape')
+                logging.info(prompts_probs.shape)
+                logging.info(prompts_probs)
                 with torch.no_grad():
                     if args.trial and step >= 100:
                         break
@@ -669,8 +672,10 @@ def main():
                     #  Key
                     for k in range(args.sample_size):
                         prompts_probs.grad += 1 / (args.sample_size - 1) * (loss_list[k] - loss_avg) * derivative[k]
-                    logging.info('prompts_probs.grad')
-                    logging.info(prompts_probs.grad.shape)
+                    # logging.info('prompts_probs.grad')
+                    # logging.info(prompts_probs.grad.shape)
+                    # 10-10 00:35:43 INFO - run_glue_discrete_LM.py:672 - prompts_probs.grad
+                    # 10-10 00:35:43 INFO - run_glue_discrete_LM.py:673 - torch.Size([10, 200])
                     torch.nn.utils.clip_grad_norm_(prompts_probs, 3)
                     prompt_optimizer.step()
                     constrainScoreByWholeExact(prompts_probs)
