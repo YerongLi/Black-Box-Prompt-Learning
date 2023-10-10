@@ -562,26 +562,51 @@ def main():
             for step, batch in enumerate(train_dataloader):
 
                 # ===================== Printing ===============
-                input_ids = batch['input_ids']
-                labels = batch['labels']
+                # input_ids = batch['input_ids']
+                # labels = batch['labels']
 
-                # Convert tensors to lists
-                input_ids = input_ids.tolist()
-                labels = labels.tolist()
+                # # Convert tensors to lists
+                # input_ids = input_ids.tolist()
+                # labels = labels.tolist()
 
-                # Tokenize and decode input_ids and labels
-                for i in range(min(len(input_ids), 3)):
-                    input_text = tokenizer.decode(input_ids[i], skip_special_tokens=True)
-                    label_text = tokenizer.decode(labels[i], skip_special_tokens=True)
+                # # Tokenize and decode input_ids and labels
+                # for i in range(min(len(input_ids), 3)):
+                #     input_text = tokenizer.decode(input_ids[i], skip_special_tokens=True)
+                #     label_text = tokenizer.decode(labels[i], skip_special_tokens=True)
 
-                    logging.info(f"Input: {input_text}")
-                    logging.info(f"Label: {label_text}")
+                #     logging.info(f"Input: {input_text}")
+                #     logging.info(f"Label: {label_text}")
 
 
                 # ===================== Printing ===============
 
-                # logging.info('train_batches')
-                # logging.info(batch)
+                # 10-10 00:12:20 INFO - run_glue_discrete_LM.py:577 - Input: The broader Standard & Poor's 500 Index.SPX was up 3.41 points, or 0.35 percent, at 967.00, also its highest close so far this year.The broader Standard & Poor's 500 Index.SPX was down 0.04 points, or 0 percent, at 971.52.?,
+                # 10-10 00:12:20 INFO - run_glue_discrete_LM.py:578 - Label:  no
+                # 10-10 00:12:20 INFO - run_glue_discrete_LM.py:577 - Input: Fewer than a dozen FBI agents were dispatched to secure and analyze evidence.Fewer than a dozen FBI agents will be sent to Iraq to secure and analyze evidence of the bombing.?,
+                # 10-10 00:12:20 INFO - run_glue_discrete_LM.py:578 - Label:  yes
+                # 10-10 00:12:26 INFO - run_glue_discrete_LM.py:725 - ** eval **
+                # 10-10 00:12:26 INFO - run_glue_discrete_LM.py:726 - epoch 12: {'accuracy': 0.375, 'f1': 0.5238095238095238}
+                # 10-10 00:12:26 INFO - run_glue_discrete_LM.py:577 - Input: Martin, 58, will be freed today after serving two thirds of his five-year sentence for the m
+                # anslaughter of 16-year-old Fred Barras.Martin served two thirds of a five-year sentence for the manslaughter of Barras and for wounding Fearon.?,
+                # 10-10 00:12:26 INFO - run_glue_discrete_LM.py:578 - Label:  no
+                # 10-10 00:12:26 INFO - run_glue_discrete_LM.py:577 - Input: Drewes and a friend were playing a game of " ding-dong-ditch " -- ringing doorbells and runn
+                # ing away -- in the Woodbury neighborhood in suburban Boca Raton.Drewes and his friend were pulling a mischievous, late-night game of " ding-dong-ditch 
+                # " knocking on doors or ringing doorbells and running in the Woodbury neighborhood in suburban Boca Raton.?,
+                # 10-10 00:12:26 INFO - run_glue_discrete_LM.py:578 - Label:  yes
+                # 10-10 00:12:26 INFO - run_glue_discrete_LM.py:577 - Input: The WWF also thinks a further 13,000 animals are being caught every year around the Straits of Gibraltar and in nearby areas.According to WWF, a further 13,000 individuals are estimated to be caught around the Straits of Gibraltar and in neigh
+                # boring zones.?,
+                # 10-10 00:12:26 INFO - run_glue_discrete_LM.py:578 - Label:  yes
+                # 10-10 00:12:31 INFO - run_glue_discrete_LM.py:725 - ** eval **
+                # 10-10 00:12:31 INFO - run_glue_discrete_LM.py:726 - epoch 13: {'accuracy': 0.375, 'f1': 0.5238095238095238}
+                # 10-10 00:12:31 INFO - run_glue_discrete_LM.py:577 - Input: The Cavaliers won the right Thursday to select James in the June 26 draft.The Cleveland Cava
+                # liers won the right to draft James by winning the NBA's annual lottery Thursday night.?,
+                # 10-10 00:12:31 INFO - run_glue_discrete_LM.py:578 - Label:  yes
+                # 10-10 00:12:31 INFO - run_glue_discrete_LM.py:577 - Input: Just five months ago, Dean committed to accepting taxpayer money and vowed to attack any Democrat who didnt.Just five months ago, Dean committed to accepting taxpayer money and the spending limits that come with it and vowed to attack any Democrat who didnt.?,
+                # 10-10 00:12:31 INFO - run_glue_discrete_LM.py:578 - Label:  no
+                # 10-10 00:12:31 INFO - run_glue_discrete_LM.py:577 - Input: Mr. Kozlowski contends that the event included business and that some of those attending were Tyco employees.Mr. Kozlowski contends that the event was in large part a business function.?,
+                # 10-10 00:12:31 INFO - run_glue_discrete_LM.py:578 - Label:  yes
+
+
                 prompts_dist = torch.distributions.Categorical(prompts_probs)
                 with torch.no_grad():
                     if args.trial and step >= 100:
@@ -641,9 +666,11 @@ def main():
                             derivative[k][i][prompts_discrete_indices[i]] *= -1
 
                     prompts_probs.grad = torch.zeros_like(prompts_probs)
+                    #  Key
                     for k in range(args.sample_size):
                         prompts_probs.grad += 1 / (args.sample_size - 1) * (loss_list[k] - loss_avg) * derivative[k]
-                    
+                    logging.info('prompts_probs.grad')
+                    logging.info(prompts_probs.grad)
                     torch.nn.utils.clip_grad_norm_(prompts_probs, 3)
                     prompt_optimizer.step()
                     constrainScoreByWholeExact(prompts_probs)
