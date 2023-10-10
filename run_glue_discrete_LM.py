@@ -636,6 +636,8 @@ def main():
                         # 10-10 01:01:31 INFO - run_glue_discrete_LM.py:632 - prompts_discrete_indices
                         # 10-10 01:01:31 INFO - run_glue_discrete_LM.py:633 - tensor([188,  83,  11, 178,  13, 113, 151,  76, 133, 178])
                         prompts_discrete_indices_list.append(prompts_discrete_indices)
+                        logging.info('args.use_ngram')
+                        logging.info(args.use_ngram)
                         if args.use_ngram:
                             prompts_discrete_indices_ngram_list = []
                             indices_list = prompts_discrete_indices.int().tolist()
